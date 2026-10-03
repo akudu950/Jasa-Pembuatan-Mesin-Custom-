@@ -1,0 +1,15 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { projects } from "../../data/site.js";
+export function getStaticPaths() { return projects.map(p => ({ params:{slug:p.slug}, props:{project:p} })); }
+const { project } = Astro.props;
+---
+<Layout title={`${project.title} | Portfolio Mesin Custom`} description={project.desc}>
+<section class="article-wrap"><div class="container"><article class="article">
+<div class="breadcrumb"><a href="/jasa-mesin-custom/proyek/">Portfolio</a> / {project.title}</div>
+<span class="tag">{project.category}</span><h1>{project.title}</h1><p class="lead">{project.desc}</p>
+<h2>Kebutuhan Proyek</h2><p>Isi bagian ini dengan kebutuhan customer, proses produksi yang ingin dibantu, kapasitas, ruang pemasangan, dan target hasil.</p>
+<h2>Konsep Mesin</h2><p>Tambahkan foto, gambar teknik, spesifikasi utama, material, sistem penggerak, kontrol, serta informasi teknis yang memang dapat dipublikasikan.</p>
+<h2>Hasil Pengerjaan</h2><p>Gunakan bagian ini untuk dokumentasi sebelum dan sesudah, pengujian, serta catatan hasil akhir.</p>
+</article></div></section>
+</Layout>

@@ -1,0 +1,70 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { categories, services, articles, SITE } from "../data/site.js";
+---
+<Layout title="Jasa Pembuatan Mesin Custom untuk Berbagai Kebutuhan Industri" description={SITE.description}>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow">Custom Industrial Machinery</div>
+        <h1>Jasa Pembuatan Mesin Custom untuk Kebutuhan Industri</h1>
+        <p class="lead">Pembuatan mesin berdasarkan kebutuhan proses produksi, kapasitas, material, sistem kerja, dan spesifikasi yang dibutuhkan.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent("Halo, saya ingin konsultasi pembuatan mesin custom.")}`} target="_blank" rel="noopener">Konsultasi Mesin</a>
+          <a class="btn btn-outline" href="/jasa-mesin-custom/jasa/">Lihat Katalog Mesin</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <span class="eyebrow" style="color:#b9d1ff">Solusi Berdasarkan Kebutuhan</span>
+        <strong>Mesin yang dirancang mengikuti proses kerja, bukan sebaliknya.</strong>
+        <p>Mulai dari konsep, spesifikasi, kapasitas, material, hingga kebutuhan integrasi produksi.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><div class="eyebrow">Kategori</div><h2>Solusi Mesin Custom Berdasarkan Industri</h2><p class="lead">Pilih kategori sesuai kebutuhan produksi atau gunakan halaman jasa untuk melihat jenis mesin yang tersedia.</p></div>
+      <div class="grid-4">
+        {categories.map(c => <a class="card" href={`/jasa-mesin-custom/kategori/${c.slug}/`}><div class="icon">{c.icon}</div><h3>{c.name}</h3><p>{c.desc}</p><span class="card-link">Lihat kategori →</span></a>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section dark-section">
+    <div class="container">
+      <div class="section-head"><div class="eyebrow">Katalog</div><h2>Jenis Jasa Pembuatan Mesin</h2><p class="lead">Contoh jenis mesin yang dapat dikembangkan berdasarkan kebutuhan produksi dan spesifikasi teknis.</p></div>
+      <div class="grid-3">
+        {services.slice(0,6).map(s => <a class="card" href={`/jasa-mesin-custom/jasa/${s.slug}/`}><span class="tag">{s.category}</span><h3>{s.title}</h3><p>{s.desc}</p><span class="card-link">Detail jasa →</span></a>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><div class="eyebrow">Alur</div><h2>Bagaimana Proses Mesin Custom?</h2></div>
+      <div class="stats">
+        <div class="stat"><strong>01</strong>Identifikasi kebutuhan</div>
+        <div class="stat"><strong>02</strong>Konsep & spesifikasi</div>
+        <div class="stat"><strong>03</strong>Pembuatan & pengujian</div>
+        <div class="stat"><strong>04</strong>Finishing & serah terima</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><div class="eyebrow">Artikel</div><h2>Informasi Seputar Mesin Custom</h2></div>
+      <div class="grid-3">
+        {articles.map(a => <a class="card" href={`/jasa-mesin-custom/artikel/${a.slug}/`}><span class="tag">{a.category}</span><h3>{a.title}</h3><p>{a.excerpt}</p><span class="card-link">Baca artikel →</span></a>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container cta">
+      <div><h2>Butuh Mesin dengan Spesifikasi Khusus?</h2><p>Ceritakan kebutuhan produksi, kapasitas, material, atau proses yang ingin dibuat lebih efisien.</p></div>
+      <a class="btn" style="background:white;color:#155eef" href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent("Halo, saya ingin konsultasi mesin custom. Berikut kebutuhan saya:")}`} target="_blank" rel="noopener">Konsultasi via WhatsApp</a>
+    </div>
+  </section>
+</Layout>

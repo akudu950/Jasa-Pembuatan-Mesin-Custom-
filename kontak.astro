@@ -1,0 +1,26 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { SITE } from "../data/site.js";
+---
+<Layout title="Kontak Jasa Mesin Custom" description="Konsultasikan kebutuhan pembuatan mesin custom melalui WhatsApp.">
+<section class="section"><div class="container">
+<div class="section-head"><div class="eyebrow">Konsultasi</div><h1>Butuh Mesin Custom?</h1><p class="lead">Gunakan formulir ini sebagai pembuka pesan WhatsApp. Isi kebutuhan mesin, kapasitas, material, dan informasi lain yang sudah tersedia.</p></div>
+<div class="card">
+<form onsubmit="sendWA(event)">
+<input id="nama" placeholder="Nama" required />
+<input id="perusahaan" placeholder="Nama perusahaan (opsional)" />
+<input id="jenis" placeholder="Jenis industri / produk" />
+<input id="kapasitas" placeholder="Kapasitas yang dibutuhkan" />
+<textarea id="kebutuhan" placeholder="Jelaskan kebutuhan atau spesifikasi mesin"></textarea>
+<button class="btn btn-primary" type="submit">Kirim Konsultasi via WhatsApp</button>
+</form>
+</div>
+</div></section>
+<script define:vars={{ number: SITE.whatsapp }}>
+function sendWA(e) {
+ e.preventDefault();
+ const msg = `Halo, saya ingin konsultasi mesin custom.%0A%0ANama: ${encodeURIComponent(document.getElementById('nama').value)}%0APerusahaan: ${encodeURIComponent(document.getElementById('perusahaan').value)}%0AIndustri/Produk: ${encodeURIComponent(document.getElementById('jenis').value)}%0AKapasitas: ${encodeURIComponent(document.getElementById('kapasitas').value)}%0AKebutuhan: ${encodeURIComponent(document.getElementById('kebutuhan').value)}`;
+ window.open(`https://wa.me/${number}?text=${msg}`, "_blank");
+}
+</script>
+</Layout>

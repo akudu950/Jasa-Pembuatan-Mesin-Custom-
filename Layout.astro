@@ -1,0 +1,72 @@
+---
+import "../styles/global.css";
+import { SITE } from "../data/site.js";
+const { title = SITE.name, description = SITE.description, image = "/og-image.svg", canonical } = Astro.props;
+const canonicalUrl = canonical || new URL(Astro.url.pathname, Astro.site).toString();
+---
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalUrl} />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="id_ID" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:image" content={new URL(image, Astro.site)} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="/jasa-mesin-custom/favicon.svg" />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name": SITE.name,
+    "url": Astro.site,
+    "description": SITE.description
+  })}></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="logo" href="/jasa-mesin-custom/">Jasa <span>Mesin Custom</span></a>
+      <nav class="nav-links" id="nav-links">
+        <a href="/jasa-mesin-custom/">Beranda</a>
+        <a href="/jasa-mesin-custom/jasa/">Jasa Mesin</a>
+        <a href="/jasa-mesin-custom/kategori/">Kategori</a>
+        <a href="/jasa-mesin-custom/proyek/">Proyek</a>
+        <a href="/jasa-mesin-custom/artikel/">Artikel</a>
+        <a href="/jasa-mesin-custom/kontak/">Kontak</a>
+      </nav>
+      <a class="btn btn-primary" href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(SITE.whatsappText)}`} target="_blank" rel="noopener">WhatsApp</a>
+      <button class="menu-btn" aria-label="Buka menu" onclick="document.getElementById('nav-links').classList.toggle('open')">☰</button>
+    </div>
+  </header>
+  <main><slot /></main>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <h3>Jasa Mesin Custom</h3>
+        <p>Website informasi dan katalog jasa pembuatan mesin custom untuk berbagai kebutuhan industri.</p>
+      </div>
+      <div>
+        <h3>Jasa</h3>
+        <p><a href="/jasa-mesin-custom/jasa/mesin-filling-custom/">Mesin Filling</a></p>
+        <p><a href="/jasa-mesin-custom/jasa/mesin-conveyor-custom/">Mesin Conveyor</a></p>
+        <p><a href="/jasa-mesin-custom/jasa/mesin-pengering-custom/">Mesin Pengering</a></p>
+      </div>
+      <div>
+        <h3>Informasi</h3>
+        <p><a href="/jasa-mesin-custom/artikel/">Artikel SEO</a></p>
+        <p><a href="/jasa-mesin-custom/proyek/">Portfolio</a></p>
+        <p><a href="/jasa-mesin-custom/kontak/">Konsultasi</a></p>
+      </div>
+    </div>
+    <div class="container footer-bottom">© {new Date().getFullYear()} Jasa Mesin Custom. All rights reserved.</div>
+  </footer>
+  <a class="whatsapp" aria-label="Konsultasi WhatsApp" href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(SITE.whatsappText)}`} target="_blank" rel="noopener">WA</a>
+</body>
+</html>
