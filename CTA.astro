@@ -1,0 +1,59 @@
+---
+import { SITE_CONFIG, getWhatsAppUrl } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  customMessage?: string;
+}
+
+const {
+  title = 'Butuh Mesin yang Dibuat Sesuai Kebutuhan?',
+  description = 'Konsultasikan kebutuhan mesin, kapasitas produksi, fungsi, ukuran, dan sistem kerja yang dibutuhkan bersama tim mechanical engineer kami.',
+  customMessage = 'Halo, saya ingin konsultasi mengenai jasa pembuatan mesin custom.',
+} = Astro.props;
+
+const waLink = getWhatsAppUrl(customMessage);
+---
+
+<section class="relative bg-slate-900 text-white overflow-hidden py-16 sm:py-20 border-t border-slate-800">
+  <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#F97316_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none"></div>
+
+  <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+    <div class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-400">
+      <span>Konsultasi Teknis Tanpa Komitmen</span>
+      <span aria-hidden="true">·</span>
+      <span>Respons Cepat Tim Rekayasa</span>
+    </div>
+
+    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight" style="text-wrap: balance;">
+      {title}
+    </h2>
+
+    <p class="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
+      {description}
+    </p>
+
+    <div class="pt-4 flex flex-wrap items-center justify-center gap-4">
+      <a
+        href={waLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center px-8 py-4 text-sm font-semibold uppercase tracking-wider text-white bg-orange-600 rounded-lg hover:bg-orange-500 transition-colors shadow-lg hover:shadow-orange-600/30 whitespace-nowrap"
+      >
+        Konsultasi via WhatsApp
+      </a>
+
+      <a
+        href={`${SITE_CONFIG.basePath}kontak/`}
+        class="inline-flex items-center justify-center px-6 py-4 text-sm font-semibold text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap"
+      >
+        Kirim Form Kebutuhan Mesin
+      </a>
+    </div>
+
+    <p class="text-xs text-slate-400 pt-2">
+      Hubungi {SITE_CONFIG.formattedPhone} &bull; Workshop: {SITE_CONFIG.address}
+    </p>
+  </div>
+</section>

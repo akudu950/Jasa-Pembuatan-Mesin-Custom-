@@ -1,0 +1,43 @@
+---
+import type { Article } from '../data/site';
+import { SITE_CONFIG } from '../data/site';
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+---
+
+<article class="flex flex-col justify-between p-6 bg-white rounded-xl border border-slate-200 hover:border-orange-500 hover:shadow-md transition-all duration-200">
+  <div>
+    <!-- Zero-Pill Metadata Discipline -->
+    <div class="flex items-center gap-2 text-xs text-slate-500 mb-3">
+      <span class="text-orange-600 font-medium">{article.category}</span>
+      <span aria-hidden="true">·</span>
+      <span>{article.publishDate}</span>
+      <span aria-hidden="true">·</span>
+      <span>{article.readTime}</span>
+    </div>
+
+    <h3 class="text-lg font-bold text-slate-900 hover:text-orange-600 transition-colors leading-snug">
+      <a href={`${SITE_CONFIG.basePath}artikel/${article.slug}/`}>
+        {article.title}
+      </a>
+    </h3>
+
+    <p class="mt-3 text-sm text-slate-600 line-clamp-3 leading-relaxed">
+      {article.excerpt}
+    </p>
+  </div>
+
+  <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+    <span class="text-slate-400">{article.author}</span>
+    <a
+      href={`${SITE_CONFIG.basePath}artikel/${article.slug}/`}
+      class="font-semibold text-orange-600 hover:text-orange-500 inline-flex items-center gap-1"
+    >
+      Baca Artikel &rarr;
+    </a>
+  </div>
+</article>
