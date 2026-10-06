@@ -1,0 +1,196 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CTA from '../../components/CTA.astro';
+import { PROJECTS, SERVICES, SITE_CONFIG, getWhatsAppUrl } from '../../data/site';
+
+export function getStaticPaths() {
+  return PROJECTS.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const relatedService = SERVICES.find((s) => s.slug === project.relatedServiceSlug);
+
+const waProjectUrl = getWhatsAppUrl(`Halo, saya tertarik dengan studi kasus proyek ${project.title} dan ingin konsultasi mesin serupa.`);
+
+const projectSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    'headline': project.title,
+    'description': project.summary,
+    'dateCreated': project.completionYear,
+    'author': {
+      '@type': 'Organization',
+      'name': SITE_CONFIG.companyName,
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      {
+        '@type': 'ListItem',
+        'position': 1,
+        'name': 'Home',
+        'item': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}`,
+      },
+      {
+        '@type': 'ListItem',
+        'position': 2,
+        'name': 'Portofolio Proyek',
+        'item': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}proyek/`,
+      },
+      {
+        '@type': 'ListItem',
+        'position': 3,
+        'name': project.title,
+        'item': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}proyek/${project.slug}/`,
+      },
+    ],
+  },
+];
+---
+
+<Layout
+  title={project.seoTitle}
+  description={project.seoDescription}
+  schemaJson={projectSchema}
+>
+  <section class="bg-slate-900 text-white py-16 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-xs text-slate-400 mb-4" aria-label="Breadcrumb">
+        <a href={SITE_CONFIG.basePath} class="hover:text-white transition-colors">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href={`${SITE_CONFIG.basePath}proyek/`} class="hover:text-white transition-colors">Portofolio</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-orange-400">{project.title}</span>
+      </nav>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div class="lg:col-span-8 space-y-4">
+          <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-400">
+            <span>{project.industry}</span>
+            <span aria-hidden="true">·</span>
+            <span>Tahun Selesai {project.completionYear}</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight" style="text-wrap: balance;">
+            {project.title}
+          </h1>
+
+          <p class="text-base text-slate-300 leading-relaxed">
+            {project.summary}
+          </p>
+
+          <p class="text-xs text-slate-400">
+            Kategori Klien: <span class="text-slate-200 font-medium">{project.clientType}</span>
+          </p>
+        </div>
+
+        <div class="lg:col-span-4">
+          <div class="rounded-xl overflow-hidden border border-slate-700 bg-slate-950 aspect-[4/3]">
+            <img
+              src={`${SITE_CONFIG.basePath}${project.image.replace(/^\//, '')}`}
+              alt={project.title}
+              class="w-full h-full object-cover"
+              loading="eager"
+              referrerpolicy="no-referrer"
+            />
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Problem vs Solution Breakdown -->
+  <section class="py-16 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Challenge -->
+        <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200">
+          <span class="text-xs font-semibold text-rose-600 uppercase tracking-wide block mb-1">Tantangan Klien</span>
+          <h2 class="text-lg font-bold text-slate-900 mb-3">Kondisi Lini Sebelum Solusi Mesin Custom</h2>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            {project.challenge}
+          </p>
+        </div>
+
+        <!-- Solution -->
+        <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200">
+          <span class="text-xs font-semibold text-emerald-600 uppercase tracking-wide block mb-1">Solusi Rekayasa Kami</span>
+          <h2 class="text-lg font-bold text-slate-900 mb-3">Pendekatan Desain Mekanikal &amp; Otomasi</h2>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            {project.solution}
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Specifications Table & Measurable Results -->
+  <section class="py-16 bg-slate-50 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <!-- Specs Table -->
+        <div class="lg:col-span-7">
+          <h2 class="text-xl font-bold text-slate-900 mb-4">Spesifikasi Mesin yang Direalisasikan</h2>
+          <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+            <table class="min-w-full divide-y divide-slate-200 text-sm">
+              <tbody class="divide-y divide-slate-100">
+                {project.specifications.map((sp) => (
+                  <tr>
+                    <td class="px-5 py-3 font-medium text-slate-700 w-2/5">{sp.label}</td>
+                    <td class="px-5 py-3 text-slate-600 tabular-nums">{sp.value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Quantified Results -->
+        <div class="lg:col-span-5 flex flex-col justify-between">
+          <div class="p-8 bg-white rounded-2xl border border-slate-200 shadow-sm">
+            <h2 class="text-xl font-bold text-slate-900 mb-4">Dampak &amp; Hasil Nyata di Pabrik Klien</h2>
+            <ul class="space-y-4 text-sm text-slate-600">
+              {project.results.map((res) => (
+                <li class="flex items-start gap-3">
+                  <span class="text-orange-600 font-bold text-base shrink-0">✓</span>
+                  <span class="leading-relaxed">{res}</span>
+                </li>
+              ))}
+            </ul>
+
+            {relatedService && (
+              <div class="mt-8 pt-6 border-t border-slate-100">
+                <span class="text-xs text-slate-400 block mb-1">Layanan Terkait:</span>
+                <a
+                  href={`${SITE_CONFIG.basePath}jasa/${relatedService.slug}/`}
+                  class="text-sm font-bold text-slate-900 hover:text-orange-600 inline-flex items-center gap-1"
+                >
+                  {relatedService.title} &rarr;
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <CTA
+    title="Butuh Solusi Mesin Seperti Proyek Ini?"
+    description="Konsultasikan tantangan lini produksi Anda bersama tim engineering kami via WhatsApp."
+    customMessage={`Halo, saya tertarik dengan studi kasus proyek ${project.title} dan ingin konsultasi mesin serupa.`}
+  />
+</Layout>
