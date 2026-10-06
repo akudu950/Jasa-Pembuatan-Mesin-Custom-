@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://akudu950.github.io/Jasa-Pembuatan-Mesin-Custom-/sitemap-index.xml
