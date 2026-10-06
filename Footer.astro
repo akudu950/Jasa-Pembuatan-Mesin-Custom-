@@ -1,0 +1,115 @@
+---
+import { SITE_CONFIG, CATEGORIES, SERVICES, getWhatsAppUrl } from '../data/site';
+
+const currentYear = new Date().getFullYear();
+const waLink = getWhatsAppUrl('Halo, saya ingin menanyakan informasi fabrikasi mesin industri.');
+---
+
+<footer class="bg-slate-950 text-slate-400 border-t border-slate-800 text-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+      
+      <!-- Col 1 & 2: Company Profile -->
+      <div class="lg:col-span-2 space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded bg-orange-600 flex items-center justify-center text-white font-bold text-lg">
+            M
+          </div>
+          <span class="text-lg font-bold text-white tracking-tight">
+            {SITE_CONFIG.name}
+          </span>
+        </div>
+        <p class="text-slate-400 leading-relaxed text-sm max-w-sm">
+          Perusahaan spesialis rancang bangun, rekayasa mekanikal, dan fabrikasi mesin custom untuk manufaktur, F&amp;B, pertanian, serta pengolahan limbah di seluruh Indonesia.
+        </p>
+        <div class="space-y-1.5 text-xs text-slate-400">
+          <p class="text-slate-300 font-semibold">{SITE_CONFIG.companyName}</p>
+          <p>{SITE_CONFIG.address}</p>
+          <p>Jam Kerja: {SITE_CONFIG.operatingHours}</p>
+        </div>
+      </div>
+
+      <!-- Col 3: Kategori Mesin -->
+      <div class="space-y-3">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-200">Kategori Mesin</p>
+        <ul class="space-y-2 text-xs">
+          {CATEGORIES.slice(0, 5).map((cat) => (
+            <li>
+              <a
+                href={`${SITE_CONFIG.basePath}kategori/${cat.slug}/`}
+                class="hover:text-orange-400 transition-colors"
+              >
+                {cat.title}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a
+              href={`${SITE_CONFIG.basePath}kategori/`}
+              class="text-orange-400 hover:text-orange-300 font-medium inline-flex items-center gap-1"
+            >
+              Semua Kategori &rarr;
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Layanan Jasa -->
+      <div class="space-y-3">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-200">Layanan Jasa</p>
+        <ul class="space-y-2 text-xs">
+          {SERVICES.map((srv) => (
+            <li>
+              <a
+                href={`${SITE_CONFIG.basePath}jasa/${srv.slug}/`}
+                class="hover:text-orange-400 transition-colors"
+              >
+                {srv.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Col 5: Kontak & Legalitas -->
+      <div class="space-y-3">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-200">Hubungi Kami</p>
+        <div class="space-y-2 text-xs">
+          <p>
+            <span class="text-slate-500 block">WhatsApp Konsultasi:</span>
+            <a href={waLink} target="_blank" rel="noopener noreferrer" class="text-white hover:text-orange-400 font-medium">
+              {SITE_CONFIG.formattedPhone}
+            </a>
+          </p>
+          <p>
+            <span class="text-slate-500 block">Email Resmi:</span>
+            <a href={`mailto:${SITE_CONFIG.email}`} class="text-white hover:text-orange-400 font-medium">
+              {SITE_CONFIG.email}
+            </a>
+          </p>
+          <div class="pt-2">
+            <a
+              href={waLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-block px-4 py-2 text-xs font-semibold text-white bg-slate-800 border border-slate-700 rounded hover:bg-orange-600 hover:border-orange-600 transition-colors"
+            >
+              Konsultasi WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="mt-12 pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <p>&copy; {currentYear} {SITE_CONFIG.companyName}. Seluruh hak cipta dilindungi undang-undang.</p>
+      <div class="flex items-center gap-6">
+        <a href={`${SITE_CONFIG.basePath}artikel/`} class="hover:text-slate-300 transition-colors">Portal Artikel</a>
+        <a href={`${SITE_CONFIG.basePath}proyek/`} class="hover:text-slate-300 transition-colors">Portofolio Mesin</a>
+        <a href={`${SITE_CONFIG.basePath}kontak/`} class="hover:text-slate-300 transition-colors">Hubungi Engineer</a>
+      </div>
+    </div>
+  </div>
+</footer>
