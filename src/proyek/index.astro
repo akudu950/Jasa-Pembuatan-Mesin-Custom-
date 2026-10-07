@@ -1,326 +1,56 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import CategoryCard from '../components/CategoryCard.astro';
-import ServiceCard from '../components/ServiceCard.astro';
-import ProjectCard from '../components/ProjectCard.astro';
-import ArticleCard from '../components/ArticleCard.astro';
-import CTA from '../components/CTA.astro';
-import { SITE_CONFIG, CATEGORIES, SERVICES, PROJECTS, ARTICLES, getWhatsAppUrl } from '../data/site';
+import Layout from '../../layouts/Layout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import CTA from '../../components/CTA.astro';
+import { PROJECTS, SITE_CONFIG } from '../../data/site';
 
-const homepageSchema = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    'name': SITE_CONFIG.name,
-    'legalName': SITE_CONFIG.companyName,
-    'url': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}`,
-    'logo': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}favicon.svg`,
-    'telephone': SITE_CONFIG.formattedPhone,
-    'email': SITE_CONFIG.email,
-    'address': {
-      '@type': 'PostalAddress',
-      'streetAddress': SITE_CONFIG.address,
-      'addressCountry': 'ID',
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    {
+      '@type': 'ListItem',
+      'position': 1,
+      'name': 'Home',
+      'item': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}`,
     },
-    'description': 'Jasa fabrikasi, rekayasa mekanikal, dan perancangan mesin custom industri di Indonesia.',
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    'name': SITE_CONFIG.name,
-    'url': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}`,
-  },
-];
-
-const customerProblems = [
-  {
-    title: 'Kapasitas Tidak Sesuai',
-    desc: 'Mesin standar pasaran memiliki output terlalu kecil untuk target Anda atau justru terlalu masif sehingga boros energi operasional.',
-  },
-  {
-    title: 'Dimensi Mesin Terlalu Besar',
-    desc: 'Mesin impor seringkali memakan tempat dan tidak pas dengan denah lantai pabrik atau lorong bangunan yang ada.',
-  },
-  {
-    title: 'Proses Produksi Tidak Efisien',
-    desc: 'Masih mengandalkan banyak tenaga kerja manual pada titik-titik kritis yang rentan human-error dan produk cacat.',
-  },
-  {
-    title: 'Mesin Standar Tidak Cocok',
-    desc: 'Bahan baku unik Anda (viskositas saus, kekenyalan adonan, atau kelembapan biji) kerap membuat mesin generik macet.',
-  },
-  {
-    title: 'Membutuhkan Otomatisasi',
-    desc: 'Perlunya integrasi sensor cerdas, pembacaan beban, dan kontrol PLC terpusat tanpa harus membeli lini baru yang mahal.',
-  },
-  {
-    title: 'Membutuhkan Modifikasi Proses',
-    desc: 'Perubahan regulasi kemasan atau diversifikasi varian produk menuntut modifikasi mekanikal yang fleksibel.',
-  },
-];
-
-const customSolutions = [
-  { title: 'Fungsi Spesifik', desc: 'Dirancang memecahkan tahapan kerja khusus yang tidak tersedia di katalog mesin standar.' },
-  { title: 'Kapasitas Terukur', desc: 'Output dirancang persis dengan target cycle time harian atau tonase pabrik Anda.' },
-  { title: 'Material Tepat Guna', desc: 'Pilihan baja food-grade SUS 316, baja anti-aus Hardox, atau paduan ringan aluminium.' },
-  { title: 'Ukuran Pas Layout', desc: 'Desain geometris menyesuaikan denah workshop, plafon, dan jalur lalu lintas forklift.' },
-  { title: 'Sistem Kerja Modular', desc: 'Bisa digabungkan atau dikembangkan di kemudian hari seiring ekspansi bisnis Anda.' },
-  { title: 'Tingkat Otomatisasi', desc: 'Pilihan operasi manual terpandu, semi-otomatis, hingga fully automated PLC interlock.' },
-  { title: 'Layout Produksi Efisien', desc: 'Alur kerja ergonomis yang meminimalisir langkah operator dan risiko cedera kerja.' },
-  { title: 'Kebutuhan Sektor Industri', desc: 'Memenuhi standar regulasi higienitas BPOM, GMP F&B, maupun standar keselamatan CE industri.' },
-];
-
-const serviceScopes = [
-  { step: '01', title: 'Konsultasi Kebutuhan Mesin', desc: 'Audit alur proses produksi dan inventarisasi batasan teknis pabrik.' },
-  { step: '02', title: 'Engineering & Desain 3D CAD', desc: 'Pemodelan detail komponen, simulasi kinematika, dan kalkulasi kekuatan rangka.' },
-  { step: '03', title: 'Pembuatan Komponen Presisi', desc: 'Machining CNC bubut, frais, wire-cut, serta shearing pelat baja toleransi tinggi.' },
-  { step: '04', title: 'Fabrikasi Struktur Heavy Duty', desc: 'Pengelasan bersertifikasi TIG/MIG dengan pelat baja stress-relieved kokoh.' },
-  { step: '05', title: 'Otomatisasi & Wiring Panel', desc: 'Instalasi kontrol PLC, sensor pneumatik, inverter VFD, dan layar sentuh HMI.' },
-  { step: '06', title: 'Modifikasi Mesin Eksisting', desc: 'Pembaruan sistem kontrol atau mekanikal pada mesin lama agar kembali kompetitif.' },
-  { step: '07', title: 'Instalasi di Fasilitas Klien', desc: 'Pemasangan unit mesin, leveling rangka, dan integrasi pipa serta kelistrikan.' },
-  { step: '08', title: 'Testing & Commissioning', desc: 'Uji jalan kontinu (trial run) dengan material nyata hingga output tercapai.' },
-  { step: '09', title: 'Pendampingan & Training Operator', desc: 'Pelatihan SOP operasional, panduan pembersihan harian, dan preventive maintenance.' },
-];
-
-const fabricationProcess = [
-  { num: '1', title: 'Konsultasi Awal', desc: 'Diskusi spesifikasi produk, target kapasitas, dan ruang lingkup proyek.' },
-  { num: '2', title: 'Analisis Kebutuhan', desc: 'Pengujian sampel bahan dan kalkulasi teknis daya motor serta mekanisme.' },
-  { num: '3', title: 'Desain Mesin', desc: 'Penyusunan gambar teknik 3D CAD dan layout penempatan komponen.' },
-  { num: '4', title: 'Persetujuan Spesifikasi', desc: 'Kajian bersama klien untuk memfinalisasi fitur, material, dan jadwal kerja.' },
-  { num: '5', title: 'Fabrikasi Mesin', desc: 'Pemesinan part presisi dan pembuatan struktur rangka di workshop.' },
-  { num: '6', title: 'Assembly & Wiring', desc: 'Perakitan mekanikal dan integrasi kabel panel otomasi kelistrikan.' },
-  { num: '7', title: 'Testing (FAT)', desc: 'Pengujian running nonstop di workshop bersama tim klien.' },
-  { num: '8', title: 'Delivery & Instalasi', desc: 'Pengiriman aman ke pabrik, pemasangan, dan commissioning di lokasi.' },
-];
-
-const advantages = [
-  { title: 'Spesifikasi Dapat Disesuaikan Penuh', desc: 'Tidak ada batasan katalog kaku; semua dimensi, kecepatan, dan kontrol dibuat sesuai permintaan.' },
-  { title: 'Fokus pada Kebutuhan Proses Produksi', desc: 'Mesin dirancang untuk menghilangkan bottleneck proses yang paling menghambat bisnis Anda.' },
-  { title: 'Desain Berdasarkan Fungsi Nyata', desc: 'Bebas dari fitur mubazir yang tidak terpakai sehingga biaya investasi menjadi rasional dan efisien.' },
-  { title: 'Dapat Dikembangkan di Masa Depan', desc: 'Rancangan modular memudahkan penambahan modul otomatisasi saat volume produksi bertambah.' },
-  { title: 'Cocok untuk Berbagai Sektor Industri', desc: 'Berpengalaman menangani industri F&B, otomotif, pengolahan limbah, hingga perkebunan.' },
-  { title: 'Konsultasi Teknis & Aftersales Terpercaya', desc: 'Dukungan engineer lokal berpengalaman yang siap memberikan asistensi dan penyediaan suku cadang.' },
-];
+    {
+      '@type': 'ListItem',
+      'position': 2,
+      'name': 'Proyek',
+      'item': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}proyek/`,
+    },
+  ],
+};
 ---
 
 <Layout
-  title="Jasa Pembuatan Mesin Custom untuk Kebutuhan Industri"
-  description="Jasa pembuatan dan fabrikasi mesin custom industri terpercaya. Rancang bangun mesin food grade, conveyor, packaging, shredder, dan press sesuai spesifikasi."
-  schemaJson={homepageSchema}
+  title="Portofolio Proyek Mesin Custom Industri - Studi Kasus"
+  description="Lihat dokumentasi proyek dan studi kasus perancangan mesin custom kami: mesin filling liquid otomatis, sistem conveyor modular, dan baling press industri."
+  schemaJson={breadcrumbSchema}
 >
-  <!-- SECTION 1: HERO -->
-  <Hero />
-
-  <!-- SECTION 2: MASALAH PELANGGAN -->
-  <section class="py-16 md:py-20 bg-slate-100 border-b border-slate-200">
+  <section class="bg-slate-900 text-white py-16 border-b border-slate-800">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav class="flex items-center gap-2 text-xs text-slate-400 mb-4" aria-label="Breadcrumb">
+        <a href={SITE_CONFIG.basePath} class="hover:text-white transition-colors">Home</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-orange-400">Portofolio Proyek</span>
+      </nav>
+
       <div class="max-w-3xl">
-        <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-600 mb-2">
-          <span>Tantangan Produksi</span>
-          <span aria-hidden="true">·</span>
-          <span>Hambatan Manufaktur</span>
-        </div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight" style="text-wrap: balance;">
-          Ketika Mesin Standar Tidak Sesuai Kebutuhan Produksi
-        </h2>
-        <p class="mt-3 text-base text-slate-600 leading-relaxed">
-          Membeli mesin generik dari katalog seringkali memicu kompromi yang mengorbankan kualitas dan efisiensi pabrik Anda. Berikut hambatan umum yang dihadapi pelaku industri:
-        </p>
-      </div>
-
-      <div class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {customerProblems.map((prob, i) => (
-          <div class="p-6 bg-white rounded-xl border border-slate-200 hover:border-slate-300 transition-colors">
-            <span class="text-xs font-mono text-slate-400">Tantangan {String(i + 1).padStart(2, '0')}</span>
-            <h3 class="text-base font-bold text-slate-900 mt-2 mb-2">{prob.title}</h3>
-            <p class="text-sm text-slate-600 leading-relaxed">{prob.desc}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 3: SOLUSI -->
-  <section class="py-16 md:py-20 bg-white border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl">
-        <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-600 mb-2">
-          <span>Pendekatan Rekayasa</span>
-          <span aria-hidden="true">·</span>
-          <span>Bespoke Engineering</span>
-        </div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight" style="text-wrap: balance;">
-          Solusi Mesin Custom Sesuai Kebutuhan
-        </h2>
-        <p class="mt-3 text-base text-slate-600 leading-relaxed">
-          Kami tidak memaksakan model generik. Setiap unit mesin kami rancang bangun dari nol agar berpadu selaras dengan ekosistem produksi di lantai kerja Anda.
-        </p>
-      </div>
-
-      <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {customSolutions.map((sol) => (
-          <div class="p-5 bg-slate-50 rounded-xl border border-slate-200/80">
-            <div class="w-2 h-2 rounded-full bg-orange-600 mb-3"></div>
-            <h3 class="text-sm font-bold text-slate-900">{sol.title}</h3>
-            <p class="text-xs text-slate-600 mt-2 leading-relaxed">{sol.desc}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 4: KATEGORI MESIN -->
-  <section class="py-16 md:py-20 bg-slate-50 border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-        <div>
-          <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-600 mb-2">
-            <span>Sektor Industri</span>
-            <span aria-hidden="true">·</span>
-            <span>Portofolio Bidang</span>
-          </div>
-          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-            Kategori Mesin Custom Industri
-          </h2>
-        </div>
-        <p class="text-sm text-slate-600 max-w-md">
-          Spesialisasi rekayasa mesin yang disesuaikan dengan standar regulasi masing-masing industri.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {CATEGORIES.map((cat, idx) => (
-          <CategoryCard category={cat} index={idx} />
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 5: LAYANAN -->
-  <section class="py-16 md:py-20 bg-white border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl mb-12">
-        <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-600 mb-2">
-          <span>End-to-End Service</span>
-          <span aria-hidden="true">·</span>
-          <span>Ruang Lingkup Pekerjaan</span>
-        </div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight" style="text-wrap: balance;">
-          Layanan Fabrikasi &amp; Engineering Komprehensif
-        </h2>
-        <p class="mt-3 text-base text-slate-600 leading-relaxed">
-          Kami mendampingi Anda di setiap tahap: mulai dari studi kelayakan teknis, pemodelan 3D, pemesinan presisi, hingga training operator pabrik.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {serviceScopes.map((scope) => (
-          <div class="p-6 bg-slate-50 rounded-xl border border-slate-200 hover:border-slate-300 transition-colors">
-            <span class="text-xs font-mono font-bold text-orange-600">{scope.step}</span>
-            <h3 class="text-base font-bold text-slate-900 mt-2 mb-2">{scope.title}</h3>
-            <p class="text-sm text-slate-600 leading-relaxed">{scope.desc}</p>
-          </div>
-        ))}
-      </div>
-
-      <!-- Featured Services Grid -->
-      <div class="mt-16 pt-12 border-t border-slate-200">
-        <h3 class="text-xl font-bold text-slate-900 mb-6">Layanan Mesin Unggulan</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {SERVICES.slice(0, 3).map((srv) => (
-            <ServiceCard service={srv} />
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 6: PROSES PEMBUATAN -->
-  <section class="py-16 md:py-20 bg-slate-900 text-white border-b border-slate-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl mb-12">
-        <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-400 mb-2">
-          <span>Alur Terstruktur</span>
-          <span aria-hidden="true">·</span>
-          <span>Standar Mutu Proyek</span>
-        </div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight" style="text-wrap: balance;">
-          8 Tahapan Proses Pembuatan Mesin Custom
-        </h2>
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight" style="text-wrap: balance;">
+          Portofolio Rekayasa &amp; Proyek Mesin Custom
+        </h1>
         <p class="mt-3 text-base text-slate-300 leading-relaxed">
-          Metodologi engineering transparan dan terukur untuk memastikan mesin selesai tepat waktu dengan performa sesuai target kontrak.
+          Kumpulan studi kasus implementasi mesin di berbagai sektor manufaktur, membuktikan peningkatan produktivitas nyata dan reduksi downtime klien kami.
         </p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {fabricationProcess.map((proc) => (
-          <div class="p-6 bg-slate-800/80 rounded-xl border border-slate-700/80 flex flex-col justify-between">
-            <div>
-              <div class="w-8 h-8 rounded bg-orange-600 flex items-center justify-center font-bold text-white text-sm mb-4">
-                {proc.num}
-              </div>
-              <h3 class="text-base font-bold text-white">{proc.title}</h3>
-              <p class="text-xs text-slate-300 mt-2 leading-relaxed">{proc.desc}</p>
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   </section>
 
-  <!-- SECTION 7: KEUNGGULAN -->
-  <section class="py-16 md:py-20 bg-white border-b border-slate-200">
+  <section class="py-16 bg-white border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl mb-12">
-        <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-600 mb-2">
-          <span>Nilai Tambah Kami</span>
-          <span aria-hidden="true">·</span>
-          <span>Kenapa Memilih Kami</span>
-        </div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight" style="text-wrap: balance;">
-          Keunggulan Menggunakan Jasa Pembuatan Mesin Custom Kami
-        </h2>
-        <p class="mt-3 text-base text-slate-600 leading-relaxed">
-          Dirancang untuk memberikan return on investment (ROI) optimal dengan kemudahan perawatan jangka panjang.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {advantages.map((adv) => (
-          <div class="p-6 bg-slate-50 rounded-xl border border-slate-200">
-            <div class="text-orange-600 font-bold text-lg mb-2">✦</div>
-            <h3 class="text-base font-bold text-slate-900">{adv.title}</h3>
-            <p class="text-sm text-slate-600 mt-2 leading-relaxed">{adv.desc}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 8: PORTFOLIO -->
-  <section class="py-16 md:py-20 bg-slate-50 border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-        <div>
-          <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-600 mb-2">
-            <span>Studi Kasus Nyata</span>
-            <span aria-hidden="true">·</span>
-            <span>Rekam Jejak Lapangan</span>
-          </div>
-          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-            Portofolio Proyek Mesin Custom
-          </h2>
-        </div>
-        <a
-          href={`${SITE_CONFIG.basePath}proyek/`}
-          class="text-xs font-semibold text-orange-600 hover:text-orange-500 inline-flex items-center gap-1"
-        >
-          Lihat Semua Portofolio &rarr;
-        </a>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {PROJECTS.map((proj) => (
           <ProjectCard project={proj} />
         ))}
@@ -328,36 +58,5 @@ const advantages = [
     </div>
   </section>
 
-  <!-- SECTION 9: ARTIKEL SEO -->
-  <section class="py-16 md:py-20 bg-white border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-        <div>
-          <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-600 mb-2">
-            <span>Edukasi &amp; Wawasan</span>
-            <span aria-hidden="true">·</span>
-            <span>Panduan Pengadaan</span>
-          </div>
-          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-            Artikel Terbaru Seputar Mesin Custom
-          </h2>
-        </div>
-        <a
-          href={`${SITE_CONFIG.basePath}artikel/`}
-          class="text-xs font-semibold text-orange-600 hover:text-orange-500 inline-flex items-center gap-1"
-        >
-          Lihat Semua Artikel &rarr;
-        </a>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {ARTICLES.slice(0, 2).map((art) => (
-          <ArticleCard article={art} />
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 10: CTA -->
   <CTA />
 </Layout>
