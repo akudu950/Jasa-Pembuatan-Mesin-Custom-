@@ -1,0 +1,87 @@
+---
+import { SITE_CONFIG, getWhatsAppUrl } from '../data/site';
+
+const waLink = getWhatsAppUrl('Halo, saya ingin konsultasi mengenai jasa pembuatan mesin custom.');
+---
+
+<section class="relative bg-slate-900 text-white overflow-hidden py-16 md:py-24 border-b border-slate-800">
+  <!-- Subtle Industrial Grid Background -->
+  <div class="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#334155_1px,transparent_1px),linear-gradient(to_bottom,#334155_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      
+      <!-- Left Column: Copy & CTAs -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Clean Unboxed Editorial Eyebrow (No Pills) -->
+        <div class="flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-orange-400">
+          <span>Rekayasa Mekanikal</span>
+          <span aria-hidden="true">·</span>
+          <span>Fabrikasi Khusus</span>
+          <span aria-hidden="true">·</span>
+          <span>Otomasi PLC Industri</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight" style="text-wrap: balance;">
+          Jasa Pembuatan Mesin Custom untuk Kebutuhan Industri
+        </h1>
+
+        <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl">
+          Kami merancang dan memproduksi mesin khusus berdasarkan kapasitas target, alur proses produksi spesifik, dimensi ruang pabrik, dan kebutuhan presisi industri Anda. Dari konsep desain CAD 3D, fabrikasi heavy duty, hingga commissioning terjamin.
+        </p>
+
+        <!-- CTAs -->
+        <div class="flex flex-wrap items-center gap-4 pt-2">
+          <a
+            href={waLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center px-6 py-3.5 text-sm font-semibold tracking-wide text-white bg-orange-600 rounded-lg hover:bg-orange-500 transition-colors shadow-lg hover:shadow-orange-600/20 whitespace-nowrap"
+          >
+            Konsultasi via WhatsApp
+          </a>
+
+          <a
+            href={`${SITE_CONFIG.basePath}jasa/`}
+            class="inline-flex items-center justify-center px-6 py-3.5 text-sm font-medium text-slate-200 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap"
+          >
+            Lihat Layanan
+          </a>
+        </div>
+
+        <!-- Trust Metrics Adjacent to Value Prop -->
+        <div class="pt-8 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {SITE_CONFIG.stats.map((stat) => (
+            <div>
+              <div class="text-xl sm:text-2xl font-bold text-white tabular-nums">{stat.value}</div>
+              <div class="text-xs text-slate-400 mt-0.5 leading-snug">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+
+      <!-- Right Column: Visual Industrial Asset -->
+      <div class="lg:col-span-5 relative">
+        <div class="relative rounded-2xl overflow-hidden border border-slate-700/80 shadow-2xl bg-slate-950 aspect-[4/3] group">
+          <!-- Machine Photography -->
+          <img
+            src={`${SITE_CONFIG.basePath}images/hero_industrial_machine.jpg`}
+            alt="Fasilitas workshop fabrikasi mesin custom industri presisi"
+            class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+            loading="eager"
+            referrerpolicy="no-referrer"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+          
+          <div class="absolute bottom-4 left-4 right-4 text-xs text-slate-300">
+            <span class="font-semibold text-white block text-sm">Workshop Rekayasa &amp; Machining Presisi</span>
+            <span>CNC Milling, TIG/MIG Welding, Assembly &amp; Testing Facility</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
