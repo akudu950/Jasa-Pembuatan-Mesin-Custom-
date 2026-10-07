@@ -1,0 +1,150 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import CTA from '../../components/CTA.astro';
+import { CATEGORIES, SERVICES, SITE_CONFIG, getWhatsAppUrl } from '../../data/site';
+
+export function getStaticPaths() {
+  return CATEGORIES.map((cat) => ({
+    params: { slug: cat.slug },
+    props: { category: cat },
+  }));
+}
+
+const { category } = Astro.props;
+
+// Filter services belonging to or related to this category
+const relatedServices = SERVICES.filter(
+  (s) => s.categorySlug === category.slug || category.services.includes(s.slug)
+);
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  'itemListElement': [
+    {
+      '@type': 'ListItem',
+      'position': 1,
+      'name': 'Home',
+      'item': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}`,
+    },
+    {
+      '@type': 'ListItem',
+      'position': 2,
+      'name': 'Kategori Mesin',
+      'item': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}kategori/`,
+    },
+    {
+      '@type': 'ListItem',
+      'position': 3,
+      'name': category.title,
+      'item': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}kategori/${category.slug}/`,
+    },
+  ],
+};
+
+const waCategory = getWhatsAppUrl(`Halo, saya ingin konsultasi mengenai pembuatan mesin untuk sektor ${category.title}.`);
+---
+
+<Layout
+  title={category.seoTitle}
+  description={category.seoDescription}
+  schemaJson={breadcrumbSchema}
+>
+  <!-- Category Hero Header -->
+  <section class="bg-slate-900 text-white py-16 md:py-20 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-xs text-slate-400 mb-4" aria-label="Breadcrumb">
+        <a href={SITE_CONFIG.basePath} class="hover:text-white transition-colors">Home</a>
+        <span aria-hidden="true">/</span>
+        <span class="text-slate-400">Kategori Mesin</span>
+        <span aria-hidden="true">/</span>
+        <span class="text-orange-400">{category.title}</span>
+      </nav>
+
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-400 mb-3">
+          <span>Kategori Industri</span>
+          <span aria-hidden="true">·</span>
+          <span>Spesialisasi Fabrikasi</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight" style="text-wrap: balance;">
+          {category.seoTitle}
+        </h1>
+        <p class="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
+          {category.description}
+        </p>
+        <div class="mt-6 flex flex-wrap gap-4">
+          <a
+            href={waCategory}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-white bg-orange-600 rounded-lg hover:bg-orange-500 transition-colors shadow-md whitespace-nowrap"
+          >
+            Konsultasi Sektor Ini
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Technical Standards & Features -->
+  <section class="py-12 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <div class="p-6 bg-slate-50 rounded-xl border border-slate-200">
+          <h2 class="text-base font-bold text-slate-900 mb-3">Standar Teknis &amp; Spesifikasi Kategori</h2>
+          <ul class="space-y-2 text-xs text-slate-700">
+            {category.features.map((feat) => (
+              <li class="flex items-start gap-2.5">
+                <span class="text-orange-600 font-bold">✓</span>
+                <span>{feat}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="p-6 bg-slate-50 rounded-xl border border-slate-200">
+          <h2 class="text-base font-bold text-slate-900 mb-3">Target Industri Pengguna</h2>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            {category.targetIndustry}
+          </p>
+          <div class="mt-4 pt-3 border-t border-slate-200 text-xs text-slate-500">
+            Seluruh sistem kami desain agar memenuhi standar Keselamatan Kerja K3 dan kepatuhan audit BPOM / ISO bila dipersyaratkan.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Services in this Category -->
+  <section class="py-16 bg-slate-50 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="mb-10">
+        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">
+          Layanan Mesin Terkait {category.title}
+        </h2>
+        <p class="text-sm text-slate-600 mt-1">
+          Pilihan varian mesin spesifik yang dapat dirancang bangun sesuai kebutuhan lini Anda.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {relatedServices.map((srv) => (
+          <ServiceCard service={srv} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTA
+    title={`Rancang Mesin ${category.title} Sesuai Kebutuhan Anda`}
+    description={`Diskusikan rencana spesifikasi, kapasitas output per jam, dan denah penempatan mesin dengan engineer kami.`}
+    customMessage={`Halo, saya ingin konsultasi mengenai pembuatan mesin untuk sektor ${category.title}.`}
+  />
+</Layout>
