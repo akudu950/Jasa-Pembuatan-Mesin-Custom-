@@ -1,0 +1,275 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CTA from '../../components/CTA.astro';
+import { SERVICES, PROJECTS, ARTICLES, SITE_CONFIG, getWhatsAppUrl } from '../../data/site';
+
+export function getStaticPaths() {
+  return SERVICES.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+
+const relatedProject = PROJECTS.find((p) => p.slug === service.relatedProjectSlug);
+const relatedArticle = ARTICLES.find((a) => a.slug === service.relatedArticleSlug);
+
+const waServiceUrl = getWhatsAppUrl(`Halo, saya ingin konsultasi mengenai ${service.title}.`);
+
+const serviceSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    'serviceType': service.title,
+    'provider': {
+      '@type': 'Organization',
+      'name': SITE_CONFIG.companyName,
+      'url': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}`,
+    },
+    'description': service.fullDesc,
+    'areaServed': 'ID',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      {
+        '@type': 'ListItem',
+        'position': 1,
+        'name': 'Home',
+        'item': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}`,
+      },
+      {
+        '@type': 'ListItem',
+        'position': 2,
+        'name': 'Jasa Mesin',
+        'item': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}jasa/`,
+      },
+      {
+        '@type': 'ListItem',
+        'position': 3,
+        'name': service.title,
+        'item': `${SITE_CONFIG.siteUrl}${SITE_CONFIG.basePath}jasa/${service.slug}/`,
+      },
+    ],
+  },
+];
+---
+
+<Layout
+  title={service.seoTitle}
+  description={service.seoDescription}
+  schemaJson={serviceSchema}
+>
+  <!-- Service Hero Section -->
+  <section class="bg-slate-900 text-white py-16 md:py-20 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-xs text-slate-400 mb-4" aria-label="Breadcrumb">
+        <a href={SITE_CONFIG.basePath} class="hover:text-white transition-colors">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href={`${SITE_CONFIG.basePath}kategori/${service.categorySlug}/`} class="hover:text-white transition-colors">
+          {service.categoryTitle}
+        </a>
+        <span aria-hidden="true">/</span>
+        <span class="text-orange-400">{service.title}</span>
+      </nav>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-7 space-y-6">
+          <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-400">
+            <span>{service.categoryTitle}</span>
+            <span aria-hidden="true">·</span>
+            <span>Spesifikasi Custom</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight" style="text-wrap: balance;">
+            {service.seoTitle}
+          </h1>
+
+          <p class="text-base sm:text-lg text-slate-300 leading-relaxed">
+            {service.fullDesc}
+          </p>
+
+          <div class="pt-2 flex flex-wrap gap-4">
+            <a
+              href={waServiceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-white bg-orange-600 rounded-lg hover:bg-orange-500 transition-colors shadow-lg whitespace-nowrap"
+            >
+              Konsultasi {service.title}
+            </a>
+            <a
+              href={`${SITE_CONFIG.basePath}kontak/`}
+              class="px-6 py-3.5 text-xs font-medium text-slate-300 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700 hover:text-white transition-colors whitespace-nowrap"
+            >
+              Minta Penawaran Harga
+            </a>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5">
+          <div class="rounded-2xl overflow-hidden border border-slate-700/80 shadow-2xl bg-slate-950 aspect-[4/3]">
+            <img
+              src={`${SITE_CONFIG.basePath}${service.image.replace(/^\//, '')}`}
+              alt={`Mesin ${service.title} fabrikasi industri`}
+              class="w-full h-full object-cover"
+              loading="eager"
+              referrerpolicy="no-referrer"
+            />
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Technical Specifications Table -->
+  <section class="py-16 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mb-8">
+        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">
+          Spesifikasi Teknis &amp; Parameter Desain
+        </h2>
+        <p class="text-sm text-slate-600 mt-1">
+          Parameter di bawah ini adalah acuan konfigurasi standar yang dapat diubah sesuai toleransi operasional pabrik Anda.
+        </p>
+      </div>
+
+      <div class="overflow-x-auto rounded-xl border border-slate-200">
+        <table class="min-w-full divide-y divide-slate-200 text-sm">
+          <tbody class="divide-y divide-slate-100 bg-white">
+            {service.specs.map((item, idx) => (
+              <tr class={idx % 2 === 0 ? 'bg-slate-50/50' : 'bg-white'}>
+                <td class="px-6 py-4 font-semibold text-slate-800 w-1/3 whitespace-nowrap">
+                  {item.label}
+                </td>
+                <td class="px-6 py-4 text-slate-600 tabular-nums">
+                  {item.value}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Applications & Benefits -->
+  <section class="py-16 bg-slate-50 border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+        
+        <!-- Applications -->
+        <div class="p-8 bg-white rounded-2xl border border-slate-200">
+          <h3 class="text-lg font-bold text-slate-900 mb-4">Aplikasi di Lini Industri</h3>
+          <ul class="space-y-3 text-sm text-slate-600">
+            {service.applications.map((app) => (
+              <li class="flex items-start gap-3">
+                <span class="text-orange-600 font-bold">✓</span>
+                <span>{app}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Benefits -->
+        <div class="p-8 bg-white rounded-2xl border border-slate-200">
+          <h3 class="text-lg font-bold text-slate-900 mb-4">Keunggulan Desain Kami</h3>
+          <ul class="space-y-3 text-sm text-slate-600">
+            {service.benefits.map((ben) => (
+              <li class="flex items-start gap-3">
+                <span class="text-orange-600 font-bold">✦</span>
+                <span>{ben}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Steps for This Machine -->
+  <section class="py-16 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mb-10">
+        <h2 class="text-2xl font-bold text-slate-900 tracking-tight">
+          Alur Pengerjaan {service.title}
+        </h2>
+        <p class="text-sm text-slate-600 mt-1">
+          Tahapan terstruktur sejak konsultasi sampel produk hingga mesin beroperasi penuh di lantai pabrik Anda.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {service.processSteps.map((step, idx) => (
+          <div class="p-5 bg-slate-50 rounded-xl border border-slate-200">
+            <span class="text-xs font-mono font-bold text-orange-600">Langkah {idx + 1}</span>
+            <p class="text-sm font-semibold text-slate-800 mt-2">{step}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Contextual Internal Linking (Adjacent Proof & Article) -->
+  {(relatedProject || relatedArticle) && (
+    <section class="py-16 bg-slate-50 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-xl font-bold text-slate-900 mb-6">
+          Informasi &amp; Pembuktian Terkait
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {relatedProject && (
+            <div class="p-6 bg-white rounded-xl border border-slate-200 hover:border-slate-300">
+              <span class="text-xs font-semibold uppercase text-orange-600">Studi Kasus Nyata</span>
+              <h3 class="text-base font-bold text-slate-900 mt-1">
+                <a href={`${SITE_CONFIG.basePath}proyek/${relatedProject.slug}/`} class="hover:text-orange-600">
+                  {relatedProject.title}
+                </a>
+              </h3>
+              <p class="text-xs text-slate-600 mt-2 line-clamp-2">{relatedProject.summary}</p>
+              <a
+                href={`${SITE_CONFIG.basePath}proyek/${relatedProject.slug}/`}
+                class="mt-4 text-xs font-semibold text-slate-900 hover:text-orange-600 inline-block"
+              >
+                Lihat Proyek &rarr;
+              </a>
+            </div>
+          )}
+
+          {relatedArticle && (
+            <div class="p-6 bg-white rounded-xl border border-slate-200 hover:border-slate-300">
+              <span class="text-xs font-semibold uppercase text-orange-600">Panduan Terkait</span>
+              <h3 class="text-base font-bold text-slate-900 mt-1">
+                <a href={`${SITE_CONFIG.basePath}artikel/${relatedArticle.slug}/`} class="hover:text-orange-600">
+                  {relatedArticle.title}
+                </a>
+              </h3>
+              <p class="text-xs text-slate-600 mt-2 line-clamp-2">{relatedArticle.excerpt}</p>
+              <a
+                href={`${SITE_CONFIG.basePath}artikel/${relatedArticle.slug}/`}
+                class="mt-4 text-xs font-semibold text-slate-900 hover:text-orange-600 inline-block"
+              >
+                Baca Panduan &rarr;
+              </a>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <CTA
+    title={`Siap Membangun ${service.title}?`}
+    description={`Konsultasikan volume output, jenis material kontak, dan layout ruangan bersama engineer kami.`}
+    customMessage={`Halo, saya ingin konsultasi mengenai ${service.title}.`}
+  />
+</Layout>
